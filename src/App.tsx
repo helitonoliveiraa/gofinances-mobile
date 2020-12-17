@@ -1,16 +1,20 @@
+import 'react-native-gesture-handler';
+
 import React from 'react';
-import {View, Text} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 import {ThemeProvider} from 'styled-components';
+
+import Routes from './routes';
 
 import {styleTheme} from './styles/theme';
 
 const App: React.FC = () => {
   return (
-    <ThemeProvider theme={styleTheme}>
-      <View>
-        <Text>GoFinances</Text>
-      </View>
-    </ThemeProvider>
+    <NavigationContainer>
+      <ThemeProvider theme={styleTheme}>
+        <Routes />
+      </ThemeProvider>
+    </NavigationContainer>
   );
 };
 
