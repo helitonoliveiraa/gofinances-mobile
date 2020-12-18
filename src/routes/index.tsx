@@ -1,28 +1,64 @@
 import React from 'react';
 import {Image, Text, StyleSheet} from 'react-native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import Icon from 'react-native-vector-icons/Feather';
 
 import logo from '../assets/logo.png';
 
 import Dashboard from '../pages/Dashboard';
 import Import from '../pages/Import';
 
-const Stack = createStackNavigator();
+import {styleTheme} from '../styles/theme';
+
+const Drawer = createDrawerNavigator();
 
 const Routes: React.FC = () => {
   return (
-    <Stack.Navigator
+    <Drawer.Navigator
+      drawerStyle={{
+        backgroundColor: styleTheme.colors.shapeMain,
+        width: '50%',
+        height: 120,
+        marginTop: 60,
+        borderRadius: 5,
+      }}
+      drawerContentOptions={{
+        activeTintColor: styleTheme.colors.shapeMain,
+        inactiveTintColor: styleTheme.colors.text,
+        activeBackgroundColor: styleTheme.colors.orange,
+      }}
       screenOptions={{
         headerShown: true,
+        headerTintColor: styleTheme.colors.orange,
         headerTitle: () => <Image source={logo} />,
         headerStyle: {
-          backgroundColor: '#5636D3',
+          backgroundColor: styleTheme.colors.blue,
+          elevation: 0,
         },
         headerRight: () => <Text style={styles.data}>18 de dez</Text>,
       }}>
-      <Stack.Screen name="Dashboard" component={Dashboard} />
-      <Stack.Screen name="Import" component={Import} />
-    </Stack.Navigator>
+      <Drawer.Screen
+        name="Dashboard"
+        component={Dashboard}
+        options={{
+          drawerIcon: () => (
+            <Icon name="list" size={20} color={styleTheme.colors.text} />
+          ),
+          title: 'Listagem',
+        }}
+      />
+
+      <Drawer.Screen
+        name="Import"
+        component={Import}
+        options={{
+          drawerIcon: () => (
+            <Icon name="dollar-sign" size={20} color={styleTheme.colors.text} />
+          ),
+          title: 'Cadastrar',
+        }}
+      />
+    </Drawer.Navigator>
   );
 };
 
@@ -30,7 +66,12 @@ export default Routes;
 
 const styles = StyleSheet.create({
   data: {
-    color: '#969CB2',
+    color: styleTheme.colors.text,
     marginRight: 20,
+  },
+
+  drawerTabIcon: {
+    width: 24,
+    height: 24,
   },
 });
