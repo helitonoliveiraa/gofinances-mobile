@@ -1,6 +1,9 @@
 import styled, {css} from 'styled-components/native';
+import {FlatList} from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
+
+import {Transaction} from './index';
 
 interface TotalProps {
   total?: boolean;
@@ -107,7 +110,7 @@ export const Title = styled.Text`
     `}
 `;
 
-export const ScrollList = styled.ScrollView`
+export const List = styled(FlatList as new () => FlatList<Transaction>)`
   padding-right: 3px;
 `;
 

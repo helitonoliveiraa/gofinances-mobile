@@ -16,7 +16,7 @@ import {
   ArrowIcon,
   TotalIcon,
   ListContainer,
-  ScrollList,
+  List,
   Title,
   ListCard,
   ListCardDescription,
@@ -28,7 +28,7 @@ import {
   ListDate,
 } from './styles';
 
-interface Transaction {
+export interface Transaction {
   id: string;
   title: string;
   value: number;
@@ -146,9 +146,12 @@ const Dashboard: React.FC = () => {
       <ListContainer>
         <Title>Listagem</Title>
 
-        <ScrollList indicatorStyle="white">
-          {transactions.map((transaction: Transaction) => (
-            <ListCard key={transaction.id}>
+        <List
+          indicatorStyle="white"
+          data={transactions}
+          keyExtractor={(item) => item.id}
+          renderItem={({item: transaction}) => (
+            <ListCard>
               <ListCardDescription>{transaction.title}</ListCardDescription>
               <ListPrice type={transaction.type}>
                 {transaction.type === 'outcome'
@@ -165,8 +168,8 @@ const Dashboard: React.FC = () => {
                 <ListDate>{transaction.formattedDate}</ListDate>
               </ListFooter>
             </ListCard>
-          ))}
-        </ScrollList>
+          )}
+        />
       </ListContainer>
     </Container>
   );
