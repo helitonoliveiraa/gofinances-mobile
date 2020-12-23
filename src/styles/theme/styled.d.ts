@@ -1,4 +1,3 @@
-import {color} from 'react-native-reanimated';
 import 'styled-components';
 
 import {colors} from './colors';

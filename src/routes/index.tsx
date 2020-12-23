@@ -2,6 +2,9 @@ import React from 'react';
 import {Image, Text, StyleSheet} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Feather';
+import {lighten} from 'polished';
+import {format} from 'date-fns';
+import {ptBR} from 'date-fns/locale';
 
 import logo from '../assets/logo.png';
 
@@ -9,6 +12,9 @@ import Dashboard from '../pages/Dashboard';
 import Import from '../pages/Import';
 
 import {styleTheme} from '../styles/theme';
+
+const day = new Date().getDate();
+const month = format(new Date(), 'MMM', {locale: ptBR});
 
 const Drawer = createDrawerNavigator();
 
@@ -32,10 +38,12 @@ const Routes: React.FC = () => {
         headerTintColor: styleTheme.colors.orange,
         headerTitle: () => <Image source={logo} />,
         headerStyle: {
-          backgroundColor: styleTheme.colors.blue,
+          backgroundColor: styleTheme.colors.green,
           elevation: 0,
         },
-        headerRight: () => <Text style={styles.data}>18 de dez</Text>,
+        headerRight: () => (
+          <Text style={styles.data}>{`${day} de ${month}`}</Text>
+        ),
       }}>
       <Drawer.Screen
         name="Dashboard"
@@ -66,7 +74,7 @@ export default Routes;
 
 const styles = StyleSheet.create({
   data: {
-    color: styleTheme.colors.text,
+    color: lighten(0.22, styleTheme.colors.text),
     marginRight: 20,
   },
 

@@ -25,6 +25,7 @@
   "plugins": [
     "react",
     "prettier",
+    "react-intl",
     "react-hooks",
     "@typescript-eslint"
   ],

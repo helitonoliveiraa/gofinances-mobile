@@ -13,7 +13,10 @@ const App: React.FC = () => {
   return (
     <NavigationContainer>
       <ThemeProvider theme={styleTheme}>
-        <StatusBar barStyle="light-content" backgroundColor="#5636D3" />
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor={styleTheme.colors.green}
+        />
         <View style={styles.background}>
           <Routes />
         </View>
