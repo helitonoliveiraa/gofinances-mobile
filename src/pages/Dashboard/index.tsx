@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react';
+import {format} from 'date-fns';
+import {ptBR} from 'date-fns/locale';
 
 import api from '../../services/api';
 import formatValue from '../../utils/formatValue';
@@ -46,13 +48,40 @@ interface Balance {
 const Dashboard: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<Balance>({} as Balance);
+  const [lastIncomeDate, setLastIncomeDate] = useState({});
+  const [lastOutcomeDate, setLastOutcomeDate] = useState({});
+  const [lastTransaction, setLastTransaction] = useState({});
 
   useEffect(() => {
     async function loadTransactions(): Promise<void> {
       const {data} = await api.get('/transactions');
 
-      const transactionsData = data.transactions;
+      const transactionsData = data.transactions as Transaction[];
       const balanceData = data.balance as Balance;
+
+      transactionsData.forEach((item) => {
+        if (item.type === 'income') {
+          setLastIncomeDate(
+            format(new Date(item.created_at), 'dd MMMM', {
+              locale: ptBR,
+            }),
+          );
+        }
+
+        if (item.type === 'outcome') {
+          setLastOutcomeDate(
+            format(new Date(item.created_at), 'dd MMMM', {
+              locale: ptBR,
+            }),
+          );
+        }
+
+        setLastTransaction(
+          format(new Date(item.created_at), 'dd MMMM', {
+            locale: ptBR,
+          }),
+        );
+      });
 
       const transactionsFormattedData = transactionsData.map(
         (transaction: Transaction) => {
@@ -89,7 +118,9 @@ const Dashboard: React.FC = () => {
             <ArrowIcon name="arrow-up" size={40} color="#12A454" />
 
             <CardPrice>{balance.income}</CardPrice>
-            <CardDescription>Última entrada dia 13 abril</CardDescription>
+            <CardDescription>
+              Última entrada dia {`${lastIncomeDate}`}
+            </CardDescription>
           </Card>
 
           <Card>
@@ -97,7 +128,9 @@ const Dashboard: React.FC = () => {
             <ArrowIcon name="arrow-down" size={40} color="#E83F5B" />
 
             <CardPrice>{balance.outcome}</CardPrice>
-            <CardDescription>Última saída dia 13 abril</CardDescription>
+            <CardDescription>
+              Última saída dia {`${lastOutcomeDate}`}
+            </CardDescription>
           </Card>
 
           <Card total>
@@ -105,7 +138,7 @@ const Dashboard: React.FC = () => {
             <TotalIcon name="dollar-sign" size={40} color="#FFFFFF" />
 
             <CardPrice total>{balance.total}</CardPrice>
-            <CardDescription total>01 à 13 de abril</CardDescription>
+            <CardDescription total>01 à {`${lastTransaction}`}</CardDescription>
           </Card>
         </ScrollCardContainer>
       </Background>
