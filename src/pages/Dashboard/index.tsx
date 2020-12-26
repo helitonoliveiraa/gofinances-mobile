@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
+import {ActivityIndicator} from 'react-native';
 import {format} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
 
@@ -52,61 +53,61 @@ const Dashboard: React.FC = () => {
   const [lastOutcomeDate, setLastOutcomeDate] = useState({});
   const [lastTransaction, setLastTransaction] = useState({});
 
-  useEffect(() => {
-    async function loadTransactions(): Promise<void> {
-      const {data} = await api.get('/transactions');
+  const loadTransactions = useCallback(async () => {
+    const {data} = await api.get('/transactions');
 
-      const transactionsData = data.transactions as Transaction[];
-      const balanceData = data.balance as Balance;
+    const transactionsData = data.transactions as Transaction[];
+    const balanceData = data.balance as Balance;
 
-      transactionsData.forEach((item) => {
-        if (item.type === 'income') {
-          setLastIncomeDate(
-            format(new Date(item.created_at), 'dd MMMM', {
-              locale: ptBR,
-            }),
-          );
-        }
-
-        if (item.type === 'outcome') {
-          setLastOutcomeDate(
-            format(new Date(item.created_at), 'dd MMMM', {
-              locale: ptBR,
-            }),
-          );
-        }
-
-        setLastTransaction(
+    transactionsData.forEach((item) => {
+      if (item.type === 'income') {
+        setLastIncomeDate(
           format(new Date(item.created_at), 'dd MMMM', {
             locale: ptBR,
           }),
         );
-      });
+      }
 
-      const transactionsFormattedData = transactionsData.map(
-        (transaction: Transaction) => {
-          return {
-            ...transaction,
-            formattedValue: formatValue(transaction.value),
-            formattedDate: new Date(transaction.created_at).toLocaleDateString(
-              'pt-BR',
-            ),
-          };
-        },
+      if (item.type === 'outcome') {
+        setLastOutcomeDate(
+          format(new Date(item.created_at), 'dd MMMM', {
+            locale: ptBR,
+          }),
+        );
+      }
+
+      setLastTransaction(
+        format(new Date(item.created_at), 'dd MMMM', {
+          locale: ptBR,
+        }),
       );
+    });
 
-      const formattedBalance = {
-        income: formatValue(Number(balanceData.income)),
-        outcome: formatValue(Number(balanceData.outcome)),
-        total: formatValue(Number(balanceData.total)),
-      };
+    const transactionsFormattedData = transactionsData.map(
+      (transaction: Transaction) => {
+        return {
+          ...transaction,
+          formattedValue: formatValue(transaction.value),
+          formattedDate: new Date(transaction.created_at).toLocaleDateString(
+            'pt-BR',
+          ),
+        };
+      },
+    );
 
-      setBalance(formattedBalance);
-      setTransactions(transactionsFormattedData);
-    }
+    const formattedBalance = {
+      income: formatValue(Number(balanceData.income)),
+      outcome: formatValue(Number(balanceData.outcome)),
+      total: formatValue(Number(balanceData.total)),
+    };
 
-    loadTransactions();
+    setBalance(formattedBalance);
+    setTransactions(transactionsFormattedData);
   }, []);
+
+  useEffect(() => {
+    loadTransactions();
+  }, [loadTransactions]);
 
   return (
     <Container>
@@ -150,25 +151,26 @@ const Dashboard: React.FC = () => {
           indicatorStyle="white"
           data={transactions}
           keyExtractor={(item) => item.id}
-          renderItem={({item: transaction}) => (
-            <ListCard>
-              <ListCardDescription>{transaction.title}</ListCardDescription>
-              <ListPrice type={transaction.type}>
-                {transaction.type === 'outcome'
-                  ? `- ${transaction.formattedValue}`
-                  : transaction.formattedValue}
-              </ListPrice>
+          renderItem={({item: transaction}) => {
+            return (
+              <ListCard>
+                <ListCardDescription>{transaction.title}</ListCardDescription>
+                <ListPrice type={transaction.type}>
+                  {transaction.type === 'outcome'
+                    ? `- ${transaction.formattedValue}`
+                    : transaction.formattedValue}
+                </ListPrice>
 
-              <ListFooter>
-                <Wrapper>
-                  <CategoryIcon name="dollar-sign" size={20} color="#969CB2" />
-                  <Category>{transaction.category.title}</Category>
-                </Wrapper>
+                <ListFooter>
+                  <Wrapper>
+                    <Category>{transaction.category.title}</Category>
+                  </Wrapper>
 
-                <ListDate>{transaction.formattedDate}</ListDate>
-              </ListFooter>
-            </ListCard>
-          )}
+                  <ListDate>{transaction.formattedDate}</ListDate>
+                </ListFooter>
+              </ListCard>
+            );
+          }}
         />
       </ListContainer>
     </Container>
