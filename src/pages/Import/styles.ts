@@ -4,10 +4,11 @@ import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import {lighten} from 'polished';
 
 interface ButtonProps {
-  isFocused: boolean;
+  incomeFocus?: boolean;
+  outcomeFocus?: boolean;
 }
 
-export const Container = styled.View`
+export const Container = styled.ScrollView`
   flex: 1;
   padding: 0 16px;
 `;
@@ -42,32 +43,37 @@ export const ButtonsContainer = styled.View`
   margin-top: 16px;
 `;
 
-export const IncomeButton = styled.TouchableOpacity<ButtonProps>`
+const buttonStyle = css`
   height: 50px;
   width: 49%;
   border-width: 2px;
   border-style: solid;
   border-radius: 5px;
   border-color: ${({theme}) => lighten(0.26, theme.colors.text)};
-  background: ${({theme, isFocused}) =>
-    isFocused ? theme.colors.green : theme.colors.background};
 
   flex-direction: row;
   align-items: center;
   justify-content: center;
 `;
 
-export const OutcomeButton = styled.TouchableOpacity<ButtonProps>`
-  height: 50px;
-  width: 49%;
-  border-width: 2px;
-  border-style: solid;
-  border-radius: 5px;
-  border-color: ${({theme}) => lighten(0.26, theme.colors.text)};
+export const IncomeButton = styled.TouchableOpacity<ButtonProps>`
+  ${buttonStyle};
 
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  ${({theme, incomeFocus}) =>
+    incomeFocus &&
+    css`
+      background: ${lighten(0.38, theme.colors.green)};
+    `};
+`;
+
+export const OutcomeButton = styled.TouchableOpacity<ButtonProps>`
+  ${buttonStyle};
+
+  ${({theme, outcomeFocus}) =>
+    outcomeFocus &&
+    css`
+      background: ${lighten(0.34, theme.colors.red)};
+    `};
 `;
 
 export const ButtonText = styled.Text`
@@ -94,6 +100,7 @@ export const SubmitButton = styled(RectButton)`
     theme &&
     css`
       height: 50px;
+      margin-top: 20px;
       border-radius: 5px;
       background: ${theme.colors.orange};
       align-items: center;

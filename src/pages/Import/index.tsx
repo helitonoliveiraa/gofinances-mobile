@@ -23,12 +23,21 @@ const Import: React.FC = () => {
   const [type, setType] = useState('');
   const [category, setCategory] = useState('');
 
-  const [isFocused, setIsFocused] = useState(false);
+  const [incomeFocus, setIncomeFocus] = useState(false);
+  const [outcomeFocus, setOutcomeFocus] = useState(false);
 
   const navigation = useNavigation();
 
   const handleSwitch = useCallback((typeTransaction: string) => {
     setType(typeTransaction);
+
+    if (typeTransaction === 'income') {
+      setIncomeFocus(true);
+      setOutcomeFocus(false);
+    } else {
+      setOutcomeFocus(true);
+      setIncomeFocus(false);
+    }
   }, []);
 
   const handleSubmit = useCallback(async () => {
@@ -64,7 +73,7 @@ const Import: React.FC = () => {
   }, [title, value, type, category, navigation]);
 
   return (
-    <Container>
+    <Container contentContainerStyle={{flex: 1}}>
       <Title>Cadastro</Title>
 
       <Input
@@ -82,19 +91,15 @@ const Import: React.FC = () => {
 
       <ButtonsContainer>
         <IncomeButton
-          isFocused={isFocused}
-          onPress={() => handleSwitch('income')}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}>
+          incomeFocus={incomeFocus}
+          onPress={() => handleSwitch('income')}>
           <Icon name="arrow-up" size={30} />
           <ButtonText>Income</ButtonText>
         </IncomeButton>
 
         <OutcomeButton
-          isFocused={isFocused}
-          onPress={() => handleSwitch('outcome')}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}>
+          outcomeFocus={outcomeFocus}
+          onPress={() => handleSwitch('outcome')}>
           <Icon name="arrow-down" size={30} />
           <ButtonText>Outcome</ButtonText>
         </OutcomeButton>
